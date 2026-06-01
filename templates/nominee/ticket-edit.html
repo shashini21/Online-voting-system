@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Support Ticket - Nominee</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="/css/theme.css" rel="stylesheet">
+  <style>
+    body { background-color: var(--bg-color); }
+    .navbar-custom { background-color: var(--header-footer-bg); }
+    .glass { backdrop-filter: blur(6px); background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-light); }
+    .soft-shadow { box-shadow: 0 20px 40px var(--shadow-light); }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--header-footer-bg);">
+    <div class="container">
+      <a class="navbar-brand" href="/nominee/dashboard" style="color: white !important; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+        <i class="fas fa-award"></i> Nominee Panel
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/nominee/dashboard" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/nominee/profile" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Update Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voter/events" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">View Events</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voter/winners" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">View Winners</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/nominee/tickets" style="background-color: var(--accent-color) !important; color: var(--text-white) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">Support</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h3 mb-0 text-warning">
+        <i class="bi bi-pencil-square me-2"></i>Edit Support Ticket
+      </h1>
+      <a th:href="@{/nominee/tickets}" class="btn btn-outline-secondary shadow-sm">
+        <i class="bi bi-arrow-left me-2"></i>Back to Tickets
+      </a>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="glass soft-shadow">
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 fw-semibold" style="color: #00acc1;">Edit Ticket Information</h6>
+          </div>
+          <div class="card-body">
+            <form th:action="@{/nominee/tickets/{id}/update(id=${ticket.id})}" th:object="${ticket}" method="post" novalidate>
+              
+              <div class="mb-3">
+                <label for="subject" class="form-label">Subject</label>
+                <input type="text" class="form-control" id="subject" th:field="*{subject}" required minlength="5" maxlength="100" aria-describedby="subjectHelp">
+                <div class="form-text" id="subjectHelp">5-100 characters.</div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" th:field="*{description}" rows="5" required minlength="20" maxlength="2000" aria-describedby="descriptionHelp"></textarea>
+                <div class="form-text" id="descriptionHelp">20-2000 characters.</div>
+              </div>
+              
+              <div class="mb-3">
+                <div class="alert alert-info">
+                  <i class="bi bi-info-circle me-2"></i>
+                  <strong>Ticket ID:</strong> #<span th:text="${ticket.id}"></span><br>
+                  <strong>Status:</strong> 
+                  <span class="badge bg-warning" th:text="${ticket.status.name()}"></span><br>
+                  <strong>Created:</strong> <span th:text="${#temporals.format(ticket.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                </div>
+              </div>
+              
+              <div class="d-flex justify-content-end">
+                <a th:href="@{/nominee/tickets}" class="btn btn-secondary me-2">Cancel</a>
+                <button type="submit" class="btn btn-warning shadow-sm">
+                  <i class="bi bi-save me-2"></i>Update Ticket
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="glass soft-shadow">
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 fw-semibold" style="color: #00acc1;">Editing Guidelines</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <h6>What You Can Edit</h6>
+              <small class="text-muted">
+                • Subject (title)<br>
+                • Description (problem details)<br>
+                • This helps improve support responses
+              </small>
+            </div>
+            <div class="mb-3">
+              <h6>What You Cannot Edit</h6>
+              <small class="text-muted">
+                • Ticket ID (auto-assigned)<br>
+                • Creation date<br>
+                • Status (handled by support)<br>
+                • Support responses
+              </small>
+            </div>
+            <div class="mb-3">
+              <h6>Editing Limits</h6>
+              <small class="text-muted">
+                • Only OPEN tickets can be edited<br>
+                • Once resolved, tickets are locked<br>
+                • Prevents disruption of support workflow
+              </small>
+            </div>
+            <div class="mb-3">
+              <h6>Best Practices</h6>
+              <small class="text-muted">
+                • Be specific about the issue<br>
+                • Include steps to reproduce<br>
+                • Mention what you've already tried<br>
+                • Keep descriptions clear and concise
+              </small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="glass soft-shadow mt-3">
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 fw-semibold text-info">Quick Actions</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <a th:href="@{/nominee/tickets/{id}(id=${ticket.id})}" class="btn btn-primary btn-sm">
+                <i class="bi bi-eye me-2"></i>View Ticket Details
+              </a>
+              <a th:href="@{/nominee/tickets}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-ticket-detailed me-2"></i>All My Tickets
+              </a>
+              <a th:href="@{/nominee/tickets/new}" class="btn btn-outline-success btn-sm">
+                <i class="bi bi-plus me-2"></i>Create New Ticket
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

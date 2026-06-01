@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Support Ticket - Nominee</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="/css/theme.css" rel="stylesheet">
+  <style>
+    body { background-color: var(--bg-color); }
+    .navbar-custom { background-color: var(--header-footer-bg); }
+    .glass { backdrop-filter: blur(6px); background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-light); }
+    .soft-shadow { box-shadow: 0 20px 40px var(--shadow-light); }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--header-footer-bg);">
+    <div class="container">
+      <a class="navbar-brand" href="/nominee/dashboard" style="color: white !important; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+        <i class="fas fa-award"></i> Nominee Panel
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/nominee/dashboard" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/nominee/profile" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Update Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voter/events" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">View Events</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voter/winners" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">View Winners</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/nominee/tickets" style="background-color: var(--accent-color) !important; color: var(--text-white) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">Support</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h3 mb-0 text-info">
+        <i class="bi bi-ticket-detailed me-2"></i>Create Support Ticket
+      </h1>
+      <a th:href="@{/nominee/tickets}" class="btn btn-outline-secondary shadow-sm">
+        <i class="bi bi-arrow-left me-2"></i>Back to Tickets
+      </a>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="glass soft-shadow">
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 fw-semibold" style="color: #00acc1;">Ticket Information</h6>
+          </div>
+          <div class="card-body">
+            <form th:action="@{/nominee/tickets}" th:object="${ticket}" method="post" enctype="multipart/form-data" novalidate>
+              
+              <div class="mb-3">
+                <label for="subject" class="form-label">Subject</label>
+                <input type="text" class="form-control" id="subject" th:field="*{subject}" required minlength="5" maxlength="100" aria-describedby="subjectHelp">
+              </div>
+              
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" th:field="*{description}" rows="5" required minlength="20" maxlength="2000" aria-describedby="descriptionHelp"></textarea>
+              </div>
+              
+              <div class="mb-3">
+                <label for="attachment" class="form-label">Attachment (optional)</label>
+                <input type="file" class="form-control" id="attachment" name="attachment" accept="image/*,.pdf,.doc,.docx,.txt">
+                <div class="form-text">Upload an image or document to help describe your issue. Supported formats: JPG, PNG, PDF, DOC, DOCX, TXT</div>
+                <div class="form-text" id="subjectHelp">5-100 characters.</div>
+                <div class="form-text" id="descriptionHelp">20-2000 characters.</div>
+              </div>
+              
+              <div class="d-flex justify-content-end">
+                <a th:href="@{/nominee/tickets}" class="btn btn-secondary me-2">Cancel</a>
+                <button type="submit" class="btn btn-info shadow-sm">
+                  <i class="bi bi-paper-plane me-2"></i>Submit Ticket
+                </button>
+              </div>
+            </form>
+            <!-- Enhanced Client-Side Validation Script -->
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const form = document.querySelector('form');
+              const inputs = form.querySelectorAll('input[required], textarea[required]');
+              
+              // Validation patterns and messages
+              const validations = {
+                subject: {
+                  minLength: 5,
+                  maxLength: 100,
+                  message: 'Subject must be between 5 and 100 characters long.'
+                },
+                description: {
+                  minLength: 20,
+                  maxLength: 2000,
+                  message: 'Description must be between 20 and 2000 characters long.'
+                }
+              };
+
+              // Function to show validation error
+              function showFieldError(input, message) {
+                const existingError = input.parentNode.querySelector('.field-error');
+                if (existingError) {
+                  existingError.remove();
+                }
+
+                input.classList.add('is-invalid');
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'field-error invalid-feedback';
+                errorDiv.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i>${message}`;
+                input.parentNode.appendChild(errorDiv);
+              }
+
+              // Function to clear validation error
+              function clearFieldError(input) {
+                const existingError = input.parentNode.querySelector('.field-error');
+                if (existingError) {
+                  existingError.remove();
+                }
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+              }
+
+              // Function to validate field
+              function validateField(input) {
+                const type = input.name || input.id;
+                const value = input.value.trim();
+
+                // Check if field is empty
+                if (!value) {
+                  showFieldError(input, 'This field is required and cannot be empty.');
+                  return false;
+                }
+
+                // Check specific validations
+                if (type in validations) {
+                  const validation = validations[type];
+                  if (value.length < validation.minLength || value.length > validation.maxLength) {
+                    showFieldError(input, validation.message);
+                    return false;
+                  }
+                }
+
+                clearFieldError(input);
+                return true;
+              }
+
+              // Add validation to each input
+              inputs.forEach(input => {
+                // Real-time validation on blur
+                input.addEventListener('blur', function() {
+                  validateField(this);
+                });
+
+                // Clear validation on input
+                input.addEventListener('input', function() {
+                  if (this.classList.contains('is-invalid')) {
+                    validateField(this);
+                  }
+                  
+                  // Clear general error message
+                  const errorAlert = form.querySelector('.validation-error');
+                  if (errorAlert) {
+                    errorAlert.remove();
+                  }
+                });
+              });
+
+              // Form submission validation
+              form.addEventListener('submit', function(e) {
+                let isValid = true;
+                let firstInvalidField = null;
+                
+                inputs.forEach(input => {
+                  if (!validateField(input)) {
+                    isValid = false;
+                    if (!firstInvalidField) {
+                      firstInvalidField = input;
+                    }
+                  }
+                });
+
+                if (!isValid) {
+                  e.preventDefault();
+                  
+                  let errorAlert = form.querySelector('.validation-error');
+                  if (!errorAlert) {
+                    errorAlert = document.createElement('div');
+                    errorAlert.className = 'validation-error alert alert-danger mb-3';
+                    form.insertBefore(errorAlert, form.firstChild);
+                  }
+                  errorAlert.innerHTML = `
+                    <div class="d-flex align-items-start">
+                      <i class="bi bi-exclamation-triangle fa-lg me-3 mt-1"></i>
+                      <div>
+                        <strong>Validation Error:</strong><br>
+                        Please fix all the highlighted fields below before submitting your support ticket.
+                      </div>
+                    </div>
+                  `;
+                  
+                  if (firstInvalidField) {
+                    firstInvalidField.focus();
+                    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+                } else {
+                  // Add loading state to submit button
+                  const submitBtn = form.querySelector('button[type="submit"]');
+                  const originalText = submitBtn.innerHTML;
+                  submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Submitting Ticket...';
+                  submitBtn.disabled = true;
+                }
+              });
+
+              // File attachment validation
+              const fileInput = document.getElementById('attachment');
+              if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                  const file = this.files && this.files[0];
+                  
+                  if (file) {
+                    const maxSize = 10 * 1024 * 1024; // 10MB
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+                    
+                    // Clear previous errors
+                    clearFieldError(this);
+                    
+                    if (file.size > maxSize) {
+                      showFieldError(this, 'File size must be less than 10MB. Please choose a smaller file.');
+                      this.value = '';
+                      return false;
+                    }
+                    
+                    if (!allowedTypes.includes(file.type)) {
+                      showFieldError(this, 'Only JPG, PNG, PDF, DOC, DOCX, and TXT files are allowed.');
+                      this.value = '';
+                      return false;
+                    }
+                    
+                    // Show success message
+                    clearFieldError(this);
+                    const successDiv = document.createElement('div');
+                    successDiv.className = 'valid-feedback';
+                    successDiv.innerHTML = `<i class="bi bi-check-circle me-1"></i>File selected successfully.`;
+                    
+                    const existingFeedback = this.parentNode.querySelector('.valid-feedback');
+                    if (existingFeedback) {
+                      existingFeedback.remove();
+                    }
+                    this.parentNode.appendChild(successDiv);
+                  }
+                });
+              }
+            });
+            </script>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="glass soft-shadow">
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 fw-semibold" style="color: #00acc1;">Support Guidelines</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <h6>Subject</h6>
+              <small class="text-muted">Provide a clear, concise title for your issue.</small>
+            </div>
+            <div class="mb-3">
+              <h6>Description</h6>
+              <small class="text-muted">Include detailed information about your problem or question.</small>
+            </div>
+            <div class="mb-3">
+              <h6>Response Time</h6>
+              <small class="text-muted">We typically respond within 24 hours.</small>
+            </div>
+            <div class="mb-3">
+              <h6>Attachments</h6>
+              <small class="text-muted">
+                • Screenshots help explain issues<br>
+                • Upload error messages<br>
+                • Include relevant documents<br>
+                • Max file size: 10MB
+              </small>
+            </div>
+            <div class="mb-3">
+              <h6>Common Issues</h6>
+              <small class="text-muted">
+                • Nomination submission problems<br>
+                • Profile update issues<br>
+                • Voting system questions<br>
+                • Technical support
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

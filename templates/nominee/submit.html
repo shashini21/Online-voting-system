@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Nomination - VoteSmart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="/css/theme.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #FFFFFF;
+      --secondary-bg: #F5F5F5;
+      --text-color: #333333;
+      --accent-color: #007BFF;
+      --header-footer-bg: #111111;
+      --primary-gradient: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+      --secondary-gradient: linear-gradient(135deg, #F5F5F5 0%, #E8E8E8 100%);
+      --success-gradient: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+      --warning-gradient: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+      --dark-gradient: linear-gradient(135deg, #111111 0%, #333333 100%);
+      --glass-bg: rgba(255, 255, 255, 0.9);
+      --glass-border: rgba(0, 123, 255, 0.2);
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.15);
+      --shadow-strong: 0 12px 36px rgba(0, 0, 0, 0.2);
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background: var(--bg-color);
+        background-attachment: fixed;
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--text-primary);
+        overflow-x: hidden;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(0, 123, 255, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(0, 123, 255, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(0, 123, 255, 0.03) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    @keyframes gradientShift {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+    
+    .submit-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .submit-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+    
+    .submit-card {
+        background: var(--secondary-bg);
+        backdrop-filter: blur(15px);
+        border-radius: 24px;
+        border: 2px solid var(--glass-border);
+        box-shadow: var(--shadow-medium);
+        animation: containerGlow 3s ease-in-out infinite;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    @keyframes containerGlow {
+        0%, 100% { 
+            box-shadow: var(--shadow-medium);
+        }
+        50% { 
+            box-shadow: var(--shadow-strong);
+        }
+    }
+    
+    .submit-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: 24px 24px 0 0;
+    }
+    
+    .header-section {
+        padding: 2rem 2rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .back-btn {
+        background: var(--rose-500);
+        color: white !important;
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+        margin-bottom: 1.5rem;
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(244, 63, 94, 0.5);
+        color: white !important;
+        text-decoration: none;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--accent-color);
+        margin-bottom: 0.5rem;
+        line-height: 1.1;
+        animation: titlePulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes titlePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+    
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .form-section {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        display: block;
+        font-size: 1rem;
+    }
+    
+    .form-control, .form-select {
+        background: var(--bg-color);
+        border: 2px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-primary) !important;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-control:focus, .form-select:focus {
+        background: var(--bg-color);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        color: var(--text-primary) !important;
+        outline: none;
+    }
+    
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+    
+    .form-text {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    
+    .form-text span {
+        font-weight: 600;
+        color: var(--accent-color);
+    }
+    
+    .form-text span.warning {
+        color: var(--accent-color);
+    }
+    
+    .form-text span.danger {
+        color: #dc3545;
+    }
+    
+    /* Validation Styles */
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+        background: rgba(220, 53, 69, 0.1);
+    }
+    
+    .form-control.is-valid {
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+        background: rgba(40, 167, 69, 0.1);
+    }
+    
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: #dc3545;
+        font-weight: 500;
+    }
+    
+    .valid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+    
+    .form-control.is-invalid + .invalid-feedback {
+        display: block;
+    }
+    
+    .form-control.is-valid + .valid-feedback {
+        display: block;
+    }
+    
+    .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2) !important;
+    }
+    
+    .btn-submit:disabled:hover {
+        transform: none !important;
+        box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2) !important;
+    }
+    
+    .validation-summary {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: none;
+    }
+    
+    .validation-summary.show {
+        display: block;
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .validation-summary h6 {
+        color: #dc3545;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .validation-summary ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        color: #dc3545;
+    }
+    
+    .validation-summary li {
+        margin-bottom: 0.25rem;
+    }
+    
+    .file-upload-area {
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+    }
+    
+    .file-upload-area:hover {
+        border-color: var(--rose-400);
+        background: rgba(244, 63, 94, 0.1);
+    }
+    
+    .file-upload-icon {
+        font-size: 3rem;
+        color: var(--rose-400);
+        margin-bottom: 1rem;
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+    
+    .file-upload-text {
+        color: var(--text-primary);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .file-upload-subtext {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    .btn-submit {
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-soft);
+        border: 2px solid var(--accent-color);
+        min-width: 150px;
+        justify-content: center;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-medium);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-cancel {
+        background: var(--text-secondary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-soft);
+        min-width: 120px;
+        justify-content: center;
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .floating-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .floating-element {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: var(--rose-400);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .floating-element:nth-child(1) {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+    
+    .floating-element:nth-child(2) {
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+    
+    .floating-element:nth-child(3) {
+        bottom: 30%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-slide-up {
+        animation: slideUp 0.6s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Ensure all text uses proper colors */
+    .submit-card * {
+        color: var(--text-primary) !important;
+    }
+    
+    .submit-card input,
+    .submit-card select,
+    .submit-card textarea {
+        color: var(--text-primary) !important;
+    }
+    
+    .submit-card input::placeholder,
+    .submit-card textarea::placeholder {
+        color: var(--text-muted) !important;
+    }
+    
+    .submit-card option {
+        background: var(--bg-color);
+        color: var(--text-primary) !important;
+    }
+    
+    .right-image-section {
+        position: relative;
+        height: fit-content;
+    }
+    
+    .image-container {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, 
+            rgba(244, 63, 94, 0.1) 0%, 
+            rgba(245, 158, 11, 0.1) 25%,
+            rgba(234, 179, 8, 0.1) 50%,
+            rgba(132, 204, 22, 0.1) 75%,
+            rgba(101, 163, 13, 0.1) 100%);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .main-image {
+        width: 100%;
+        height: 600px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .image-container:hover .main-image {
+        transform: scale(1.05);
+    }
+    
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(3, 169, 244, 0.8) 0%, 
+            rgba(0, 188, 212, 0.7) 25%,
+            rgba(0, 150, 136, 0.8) 50%,
+            rgba(41, 182, 246, 0.7) 75%,
+            rgba(2, 136, 209, 0.8) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .image-container:hover .image-overlay {
+        opacity: 1;
+    }
+    
+    .overlay-content {
+        text-align: center;
+        color: white;
+        padding: 2rem;
+        max-width: 400px;
+    }
+    
+    .overlay-content h3 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .overlay-content p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    @media (max-width: 768px) {
+        .submit-container {
+            padding: 1rem;
+        }
+        
+        .submit-layout {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .form-section {
+            padding: 1.5rem;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-submit, .btn-cancel {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .main-image {
+            height: 400px;
+        }
+        
+        .overlay-content h3 {
+            font-size: 1.5rem;
+        }
+        
+        .overlay-content p {
+            font-size: 1rem;
+        }
+        
+        .stats {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--header-footer-bg);">
+    <div class="container">
+      <a class="navbar-brand" href="/nominee/dashboard" style="color: white !important; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+        <i class="fas fa-award"></i> Nominee Panel
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/nominee/dashboard" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/nominee/profile" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Update Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voter/events" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">View Events</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voter/winners" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">View Winners</a></li>
+          <li class="nav-item"><a class="nav-link" href="/nominee/tickets" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Support</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="submit-container">
+    <div class="submit-layout">
+        <div class="submit-card animate-fade-in">
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+            
+            <div class="header-section">
+                <a th:href="@{/nominee/dashboard}" class="back-btn animate-slide-up">
+                    <i class="fas fa-arrow-left"></i>Back to Dashboard
+                </a>
+                <h1 class="page-title animate-slide-up" th:text="${nominee != null and nominee.id != null ? 'Update Nomination' : 'Submit Nomination'}">Submit Nomination</h1>
+                <p class="page-subtitle animate-slide-up" th:text="${nominee != null and nominee.id != null ? 'Update your nomination details and let voters decide!' : 'Share your talent with the world and let voters decide!'}">Share your talent with the world and let voters decide!</p>
+            </div>
+        
+        <div class="form-section">
+            <form id="nominationForm" th:action="${nominee != null and nominee.id != null ? '/nominee/update/' + nominee.id : '/nominee/submit'}" method="post" enctype="multipart/form-data" novalidate>
+                <!-- Validation Summary -->
+                <div id="validationSummary" class="validation-summary">
+                    <h6><i class="fas fa-exclamation-triangle"></i>Please fix the following errors:</h6>
+                    <ul id="validationErrors"></ul>
+                </div>
+                
+                <div class="form-group animate-slide-up">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-alt me-2"></i>Event <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select" name="eventId" id="eventId" required>
+                        <option value="" disabled selected>Choose an event...</option>
+                        <option th:each="e : ${activeEvents}"
+                                th:value="${e.id}"
+                                th:selected="${event != null and e.id == event.id}"
+                                th:text="${e.title}">Event</option>
+                    </select>
+                    <div class="invalid-feedback">Please select an event.</div>
+                    <div class="valid-feedback">Event selected successfully!</div>
+                </div>
+                
+                <div class="form-group animate-slide-up">
+                    <label class="form-label">
+                        <i class="fas fa-user me-2"></i>Nominee Name <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" name="nomineeName" id="nomineeName"
+                           placeholder="Enter nominee's full name" 
+                           th:value="${nominee?.nomineeName}"
+                           required minlength="2" maxlength="80">
+                    <div class="invalid-feedback">Please enter a valid nominee name (2-80 characters).</div>
+                    <div class="valid-feedback">Nominee name looks good!</div>
+                    <div class="form-text">
+                        <span id="nomineeNameCount">0</span>/80 characters
+                    </div>
+                </div>
+                
+                <div class="form-group animate-slide-up">
+                    <label class="form-label">
+                        <i class="fas fa-tags me-2"></i>Category <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" name="category" id="category"
+                           placeholder="e.g., Singing, Dancing, Comedy, Art" 
+                           th:value="${nominee?.category}"
+                           required minlength="2" maxlength="60">
+                    <div class="invalid-feedback">Please enter a valid category (2-60 characters).</div>
+                    <div class="valid-feedback">Category looks good!</div>
+                    <div class="form-text">
+                        <span id="categoryCount">0</span>/60 characters
+                    </div>
+                </div>
+                
+                <div class="form-group animate-slide-up">
+                    <label class="form-label">
+                        <i class="fas fa-align-left me-2"></i>Description
+                    </label>
+                    <textarea name="description" class="form-control" id="description" rows="4" 
+                              placeholder="Tell voters about this nomination... What makes it special? What should they know?" 
+                              th:text="${nominee?.description}"
+                              maxlength="2000"></textarea>
+                    <div class="form-text">Share details that will help voters understand and appreciate your nomination.</div>
+                    <div class="invalid-feedback">Description cannot exceed 2000 characters.</div>
+                    <div class="valid-feedback">Description looks good!</div>
+                    <div class="form-text">
+                        <span id="descriptionCount">0</span>/2000 characters
+                    </div>
+                </div>
+                
+                <div class="form-group animate-slide-up">
+                    <label class="form-label">
+                        <i class="fas fa-image me-2"></i>Media Upload <span class="text-danger">*</span>
+                    </label>
+                    <div class="file-upload-area" onclick="document.getElementById('media').click()">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-upload-text">Click to upload image or video</div>
+                        <div class="file-upload-subtext">Supported: images (jpg/png) and videos (mp4/mov/webm). Max 200MB.</div>
+                    </div>
+                    <input type="file" class="form-control d-none" id="media" name="media" accept="image/*,video/*" required>
+                    <div class="invalid-feedback">Please upload an image or video file.</div>
+                    <div class="valid-feedback">Media file uploaded successfully!</div>
+                </div>
+                
+                <div class="form-actions animate-slide-up">
+                    <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                        <i class="fas fa-paper-plane"></i>Submit Nomination
+                    </button>
+                    <a th:href="@{/nominee/dashboard}" class="btn-cancel">
+                        <i class="fas fa-times"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+        </div>
+        
+        <div class="right-image-section animate-fade-in">
+            <div class="image-container">
+                <img src="https://i.pinimg.com/originals/ac/14/0a/ac140a627af854f14c7f653efd7d53ae.gif"
+                     alt="Voting and Democracy" 
+                     class="main-image">
+                <div class="image-overlay">
+                    <div class="overlay-content">
+                        <h3>Make Your Voice Heard</h3>
+                        <p>Join thousands of participants showcasing their talents and making a difference in their communities.</p>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-number">500+</div>
+                                <div class="stat-label">Active Events</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">10K+</div>
+                                <div class="stat-label">Participants</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">50K+</div>
+                                <div class="stat-label">Votes Cast</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <script>
+    (function(){
+        const form = document.getElementById('nominationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const validationSummary = document.getElementById('validationSummary');
+        const validationErrors = document.getElementById('validationErrors');
+        
+        // Form fields
+        const eventId = document.getElementById('eventId');
+        const nomineeName = document.getElementById('nomineeName');
+        const category = document.getElementById('category');
+        const description = document.getElementById('description');
+        const media = document.getElementById('media');
+        
+        // Upload area elements
+        const uploadArea = document.querySelector('.file-upload-area');
+        const uploadText = document.querySelector('.file-upload-text');
+        
+        const MAX_BYTES = 200 * 1024 * 1024; // 200MB
+        
+        // Validation rules
+        const validationRules = {
+            eventId: {
+                required: true,
+                message: 'Please select an event.'
+            },
+            nomineeName: {
+                required: true,
+                minLength: 2,
+                maxLength: 80,
+                message: 'Please enter a valid nominee name (2-80 characters).'
+            },
+            category: {
+                required: true,
+                minLength: 2,
+                maxLength: 60,
+                message: 'Please enter a valid category (2-60 characters).'
+            },
+            description: {
+                required: false,
+                maxLength: 2000,
+                message: 'Description cannot exceed 2000 characters.'
+            },
+            media: {
+                required: true,
+                message: 'Please upload an image or video file.'
+            }
+        };
+        
+        // Validate individual field
+        function validateField(field, rules) {
+            const value = field.value.trim();
+            let isValid = true;
+            let errorMessage = '';
+            
+            // Required field validation
+            if (rules.required && !value) {
+                errorMessage = rules.message;
+                isValid = false;
+            } 
+            // Min length validation
+            else if (rules.minLength && value.length < rules.minLength) {
+                errorMessage = rules.message;
+                isValid = false;
+            } 
+            // Max length validation
+            else if (rules.maxLength && value.length > rules.maxLength) {
+                errorMessage = rules.message;
+                isValid = false;
+            }
+            // Special validation for nominee name
+            else if (field === nomineeName && value) {
+                if (!/^[a-zA-Z\s\-'\.]+$/.test(value)) {
+                    errorMessage = 'Nominee name can only contain letters, spaces, hyphens, apostrophes, and periods.';
+                    isValid = false;
+                }
+            }
+            // Special validation for category
+            else if (field === category && value) {
+                if (!/^[a-zA-Z\s\-&,]+$/.test(value)) {
+                    errorMessage = 'Category can only contain letters, spaces, hyphens, ampersands, and commas.';
+                    isValid = false;
+                }
+            }
+            // File validation
+            else if (field === media) {
+                if (!field.files || field.files.length === 0) {
+                    errorMessage = rules.message;
+                    isValid = false;
+                } else {
+                    const file = field.files[0];
+                    // File size validation
+                    if (file.size > MAX_BYTES) {
+                        errorMessage = 'File size must be less than 200MB.';
+                        isValid = false;
+                    }
+                    // File type validation
+                    else {
+                        const type = (file.type || '').toLowerCase();
+                        const okImage = type.startsWith('image/');
+                        const okVideo = type.startsWith('video/');
+                        
+                        if (!okImage && !okVideo) {
+                            errorMessage = 'Please upload an image (JPG, PNG) or video (MP4, MOV, WEBM) file.';
+                            isValid = false;
+                        }
+                    }
+                }
+            }
+            
+            // Update field appearance
+            if (!isValid) {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+                // Show specific error message
+                const feedbackElement = field.parentNode.querySelector('.invalid-feedback');
+                if (feedbackElement) {
+                    feedbackElement.textContent = errorMessage;
+                }
+            } else {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            }
+            
+            return isValid;
+        }
+        
+        // Validate entire form
+        function validateForm() {
+            let isValid = true;
+            const errors = [];
+            
+            // Validate each field
+            Object.keys(validationRules).forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                const rules = validationRules[fieldName];
+                
+                if (!validateField(field, rules)) {
+                    isValid = false;
+                    errors.push(rules.message);
+                }
+            });
+            
+            // Update validation summary
+            if (!isValid) {
+                validationErrors.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+                validationSummary.classList.add('show');
+            } else {
+                validationSummary.classList.remove('show');
+            }
+            
+            // Enable/disable submit button
+            submitBtn.disabled = !isValid;
+            
+            return isValid;
+        }
+        
+        // Add event listeners
+        [eventId, nomineeName, category, description].forEach(field => {
+            field.addEventListener('input', validateForm);
+            field.addEventListener('blur', validateForm);
+        });
+        
+        // Character count updates with color coding
+        nomineeName.addEventListener('input', function() {
+            const count = this.value.length;
+            const countElement = document.getElementById('nomineeNameCount');
+            countElement.textContent = count;
+            
+            // Color coding based on character count
+            countElement.className = '';
+            if (count > 70) {
+                countElement.classList.add('danger');
+            } else if (count > 60) {
+                countElement.classList.add('warning');
+            }
+        });
+        
+        category.addEventListener('input', function() {
+            const count = this.value.length;
+            const countElement = document.getElementById('categoryCount');
+            countElement.textContent = count;
+            
+            // Color coding based on character count
+            countElement.className = '';
+            if (count > 50) {
+                countElement.classList.add('danger');
+            } else if (count > 40) {
+                countElement.classList.add('warning');
+            }
+        });
+        
+        description.addEventListener('input', function() {
+            const count = this.value.length;
+            const countElement = document.getElementById('descriptionCount');
+            countElement.textContent = count;
+            
+            // Color coding based on character count
+            countElement.className = '';
+            if (count > 1800) {
+                countElement.classList.add('danger');
+            } else if (count > 1500) {
+                countElement.classList.add('warning');
+            }
+        });
+        
+        // Media file validation
+        media.addEventListener('change', function(){
+            const file = this.files && this.files[0];
+            if(!file) {
+                validateForm();
+                return;
+            }
+            
+            // File size validation
+            if(file.size > MAX_BYTES){
+                alert('File size must be less than 200MB. Please choose a smaller file.');
+                this.value = '';
+                validateForm();
+                return;
+            }
+            
+            // File type validation
+            const type = (file.type || '').toLowerCase();
+            const okImage = type.startsWith('image/');
+            const okVideo = type.startsWith('video/');
+            
+            if(!okImage && !okVideo){
+                alert('Please upload an image (JPG, PNG) or video (MP4, MOV, WEBM) file.');
+                this.value = '';
+                validateForm();
+                return;
+            }
+            
+            // Update upload area text and show file info
+            const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+            uploadText.innerHTML = `
+                <i class="fas fa-check-circle text-success me-2"></i>
+                Selected: ${file.name}<br>
+                <small class="text-muted">Size: ${fileSize}MB | Type: ${okImage ? 'Image' : 'Video'}</small>
+            `;
+            uploadArea.style.borderColor = 'var(--rose-400)';
+            uploadArea.style.background = 'rgba(244, 63, 94, 0.1)';
+            
+            validateForm();
+        });
+        
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--rose-400)';
+            this.style.background = 'rgba(244, 63, 94, 0.1)';
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            this.style.background = 'rgba(255, 255, 255, 0.05)';
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            if(files.length > 0) {
+                media.files = files;
+                media.dispatchEvent(new Event('change'));
+            }
+        });
+        
+        // Form submission validation
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                // Scroll to validation summary
+                validationSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+            submitBtn.disabled = true;
+            
+            // Add a small delay to show the loading state
+            setTimeout(() => {
+                // If validation passes, submit the form
+                this.submit();
+            }, 500);
+        });
+        
+        // Initial validation check
+        validateForm();
+    })();
+  </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

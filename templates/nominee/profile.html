@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Profile - VoteSmart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="/css/theme.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #FFFFFF;
+      --secondary-bg: #F5F5F5;
+      --text-color: #333333;
+      --accent-color: #007BFF;
+      --header-footer-bg: #111111;
+      --primary-gradient: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+      --secondary-gradient: linear-gradient(135deg, #F5F5F5 0%, #E8E8E8 100%);
+      --success-gradient: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+      --warning-gradient: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+      --dark-gradient: linear-gradient(135deg, #111111 0%, #333333 100%);
+      --glass-bg: rgba(255, 255, 255, 0.9);
+      --glass-border: rgba(0, 123, 255, 0.2);
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.15);
+      --shadow-strong: 0 12px 36px rgba(0, 0, 0, 0.2);
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background: var(--bg-color);
+        background-attachment: fixed;
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--text-primary);
+        overflow-x: hidden;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(0, 123, 255, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(0, 123, 255, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(0, 123, 255, 0.03) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    @keyframes gradientShift {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+    
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .profile-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+    
+    .profile-card {
+        background: var(--secondary-bg);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-medium);
+        animation: containerGlow 3s ease-in-out infinite;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    @keyframes containerGlow {
+        0%, 100% { 
+            box-shadow: var(--shadow-medium);
+        }
+        25% { 
+            box-shadow: var(--shadow-strong);
+        }
+        50% { 
+            box-shadow: var(--shadow-strong);
+        }
+        75% { 
+            box-shadow: var(--shadow-strong);
+        }
+    }
+    
+    .profile-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: 24px 24px 0 0;
+    }
+    
+    
+    .header-section {
+        padding: 2rem 2rem 1rem;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    
+    .back-btn {
+        background: var(--accent-color);
+        color: white !important;
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 1.5rem;
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        color: white !important;
+        text-decoration: none;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--accent-color);
+        margin-bottom: 0.5rem;
+        line-height: 1.1;
+        animation: titlePulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes titlePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+    
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .form-section {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        display: block;
+        font-size: 1rem;
+    }
+    
+    .form-control {
+        background: var(--bg-color);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-primary) !important;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(15px);
+    }
+    
+    .form-control:focus {
+        background: var(--bg-color);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        color: var(--text-primary) !important;
+        outline: none;
+    }
+    
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+    
+    .alert {
+        background: var(--secondary-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-primary);
+        backdrop-filter: blur(15px);
+        margin-bottom: 2rem;
+    }
+    
+    .alert-danger {
+        border-color: rgba(244, 63, 94, 0.3);
+        background: rgba(244, 63, 94, 0.05);
+    }
+    
+    .btn-save {
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-soft);
+        border: 2px solid var(--accent-color);
+        min-width: 150px;
+        justify-content: center;
+    }
+    
+    .btn-save:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-medium);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-cancel {
+        background: var(--text-secondary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-soft);
+        min-width: 120px;
+        justify-content: center;
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .floating-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .floating-element {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(45deg, var(--rose-300), var(--amber-300));
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .floating-element:nth-child(1) {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+    
+    .floating-element:nth-child(2) {
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+    
+    .floating-element:nth-child(3) {
+        bottom: 30%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-slide-up {
+        animation: slideUp 0.6s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Ensure all text uses proper colors */
+    .profile-card * {
+        color: var(--text-primary) !important;
+    }
+    
+    .profile-card input {
+        color: var(--text-primary) !important;
+    }
+    
+    .profile-card input::placeholder {
+        color: var(--text-muted) !important;
+    }
+    
+    .right-image-section {
+        position: relative;
+        height: fit-content;
+    }
+    
+    .image-container {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow-medium);
+        background: var(--secondary-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+    }
+    
+    .main-image {
+        width: 100%;
+        height: 600px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .image-container:hover .main-image {
+        transform: scale(1.05);
+    }
+    
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(249, 168, 212, 0.6), rgba(253, 186, 116, 0.6));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .image-container:hover .image-overlay {
+        opacity: 1;
+    }
+    
+    .overlay-content {
+        text-align: center;
+        color: white;
+        padding: 2rem;
+        max-width: 400px;
+    }
+    
+    .overlay-content h3 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .overlay-content p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Validation Styles */
+    .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+    
+    .form-control.is-invalid:focus {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+    
+    .text-danger {
+        color: #dc3545 !important;
+    }
+    
+    .alert-success {
+        background: rgba(40, 167, 69, 0.1);
+        border-color: rgba(40, 167, 69, 0.3);
+        color: #155724;
+    }
+    
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 1rem;
+        }
+        
+        .profile-layout {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .form-section {
+            padding: 1.5rem;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-save, .btn-cancel {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .main-image {
+            height: 400px;
+        }
+        
+        .overlay-content h3 {
+            font-size: 1.5rem;
+        }
+        
+        .overlay-content p {
+            font-size: 1rem;
+        }
+        
+        .stats {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--header-footer-bg);">
+    <div class="container">
+      <a class="navbar-brand" href="/nominee/dashboard" style="color: white !important; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+        <i class="fas fa-award"></i> Nominee Panel
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/nominee/dashboard" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/nominee/profile" style="background-color: var(--accent-color) !important; color: var(--text-white) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">Update Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voter/events" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">View Events</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voter/winners" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">View Winners</a></li>
+          <li class="nav-item"><a class="nav-link" href="/nominee/tickets" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Support</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout" style="color: rgba(255, 255, 255, 0.9) !important; padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 8px; transition: all 0.3s ease; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="profile-container">
+    <div class="profile-layout">
+        <div class="profile-card animate-fade-in">
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+            
+            <div class="header-section">
+                <a th:href="@{/nominee/dashboard}" class="back-btn animate-slide-up">
+                    <i class="fas fa-arrow-left"></i>Back to Dashboard
+                </a>
+                <h1 class="page-title animate-slide-up">Update Profile</h1>
+                <p class="page-subtitle animate-slide-up">Keep your information up to date and secure!</p>
+            </div>
+            
+            <div class="form-section">
+                <div th:if="${error}" class="alert alert-danger animate-slide-up" th:text="${error}"></div>
+                <div th:if="${success}" class="alert alert-success animate-slide-up" th:text="${success}"></div>
+                <form id="updateProfileForm" th:action="@{/nominee/profile}" method="post" onsubmit="return validateForm()">
+                    <div class="form-group animate-slide-up">
+                        <label class="form-label">
+                            <i class="fas fa-user me-2"></i>Username <span class="text-danger">*</span>
+                        </label>
+                        <input name="username" id="username" class="form-control" th:value="${user.username}" 
+                               placeholder="Enter your username" required>
+                        <div class="invalid-feedback" id="usernameError"></div>
+                    </div>
+                    
+                    <div class="form-group animate-slide-up">
+                        <label class="form-label">
+                            <i class="fas fa-envelope me-2"></i>Email Address <span class="text-danger">*</span>
+                        </label>
+                        <input name="email" id="email" type="email" class="form-control" th:value="${user.email}" 
+                               placeholder="Enter your email address" required>
+                        <div class="invalid-feedback" id="emailError"></div>
+                    </div>
+                    
+                    <div class="form-group animate-slide-up">
+                        <label class="form-label">
+                            <i class="fas fa-lock me-2"></i>New Password
+                        </label>
+                        <input name="password" id="password" type="password" class="form-control" 
+                               placeholder="Leave blank to keep current password">
+                        <div class="invalid-feedback" id="passwordError"></div>
+                        <div class="form-text">Enter a new password only if you want to change it. Must be at least 8 characters long.</div>
+                    </div>
+                    
+                    <div class="form-actions animate-slide-up">
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save"></i>Save Changes
+                        </button>
+                        <a th:href="@{/nominee/dashboard}" class="btn-cancel">
+                            <i class="fas fa-times"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="right-image-section animate-fade-in">
+            <div class="image-container">
+                <img src="https://assets-v2.lottiefiles.com/a/78694a8e-1171-11ee-af4c-bb8dcfbb1cd9/EoPb2WLnTi.gif"
+                     alt="Profile Management" 
+                     class="main-image">
+                <div class="image-overlay">
+                    <div class="overlay-content">
+                        <h3>Secure Your Account</h3>
+                        <p>Keep your profile information current and your account secure with regular updates and strong passwords.</p>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-number">100%</div>
+                                <div class="stat-label">Secure</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-label">Protection</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">SSL</div>
+                                <div class="stat-label">Encrypted</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+  function validateForm() {
+      // Clear previous errors
+      clearAllErrors();
+      
+      // Regular expressions for validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const usernameRegex = /^[A-Za-z0-9_.-]+$/;
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+      
+      let isValid = true;
+      
+      // Get form values
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      
+      // Validate Username
+      if (!username) {
+          showFieldError("username", "Username is required.");
+          isValid = false;
+      } else if (username.length < 3) {
+          showFieldError("username", "Username must be at least 3 characters long.");
+          isValid = false;
+      } else if (username.length > 30) {
+          showFieldError("username", "Username cannot exceed 30 characters.");
+          isValid = false;
+      } else if (!usernameRegex.test(username)) {
+          showFieldError("username", "Username can only contain letters, numbers, dots, hyphens, and underscores.");
+          isValid = false;
+      }
+      
+      // Validate Email
+      if (!email) {
+          showFieldError("email", "Email is required.");
+          isValid = false;
+      } else if (!emailRegex.test(email)) {
+          showFieldError("email", "Please enter a valid email address.");
+          isValid = false;
+      } else if (email.length > 100) {
+          showFieldError("email", "Email cannot exceed 100 characters.");
+          isValid = false;
+      }
+      
+      // Validate Password (only if provided)
+      if (password && password.length > 0) {
+          if (password.length < 8) {
+              showFieldError("password", "Password must be at least 8 characters long.");
+              isValid = false;
+          } else if (!passwordRegex.test(password)) {
+              showFieldError("password", "Password must contain at least one uppercase letter, one lowercase letter, and one number.");
+              isValid = false;
+          } else if (password.length > 100) {
+              showFieldError("password", "Password cannot exceed 100 characters.");
+              isValid = false;
+          }
+      }
+      
+      if (!isValid) {
+          // Focus on first error field
+          const firstErrorField = document.querySelector('.is-invalid');
+          if (firstErrorField) {
+              firstErrorField.focus();
+          }
+          return false;
+      }
+      
+      return true;
+  }
+  
+  function showFieldError(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      const errorDiv = document.getElementById(fieldId + "Error");
+      
+      field.classList.add('is-invalid');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+  }
+  
+  function clearFieldError(fieldId) {
+      const field = document.getElementById(fieldId);
+      const errorDiv = document.getElementById(fieldId + "Error");
+      
+      field.classList.remove('is-invalid');
+      errorDiv.textContent = '';
+      errorDiv.style.display = 'none';
+  }
+  
+  function clearAllErrors() {
+      const fields = ['username', 'email', 'password'];
+      fields.forEach(fieldId => clearFieldError(fieldId));
+  }
+  
+  // Add real-time validation and error clearing
+  document.addEventListener('DOMContentLoaded', function() {
+      // Clear errors for all fields when user starts typing
+      const allFields = ['username', 'email', 'password'];
+      allFields.forEach(function(fieldId) {
+          const field = document.getElementById(fieldId);
+          if (field) {
+              field.addEventListener('input', function() {
+                  clearFieldError(fieldId);
+              });
+          }
+      });
+      
+      // Username validation (letters, numbers, dots, hyphens, underscores only)
+      const usernameInput = document.getElementById('username');
+      if (usernameInput) {
+          usernameInput.addEventListener('input', function(e) {
+              // Remove any invalid characters
+              e.target.value = e.target.value.replace(/[^A-Za-z0-9_.-]/g, '');
+          });
+          
+          // Prevent invalid input
+          usernameInput.addEventListener('keypress', function(e) {
+              if (!/[A-Za-z0-9_.-]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter'].includes(e.key)) {
+                  e.preventDefault();
+              }
+          });
+      }
+  });
+  </script>
+</body>
+</html>
